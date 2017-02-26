@@ -1,39 +1,35 @@
 package com.dgol.applicationConfig.converters;
 
-import com.dgol.applicationConfig.converters.primitives.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by dima.golomozy on 03/05/2016.
+ *
  */
 public class ConvertersFactory
 {
-    public static Converter<?> getConverter(Class<? extends Converter<?>> c)
-    {
-        switch (c.getCanonicalName())
-        {
-            case "com.dgol.applicationConfig.converters.primitives.StringConverter":
-                return StringConverter.getInstance();
-            case "com.dgol.applicationConfig.converters.primitives.IntegerConverter":
-                return IntegerConverter.getInstance();
-            case "com.dgol.applicationConfig.converters.primitives.BooleanConverter":
-                return BooleanConverter.getInstance();
-            case "com.dgol.applicationConfig.converters.primitives.CollectionConverter":
-                return new CollectionConverter();
-            case "com.dgol.applicationConfig.converters.primitives.LongConverter":
-                return LongConverter.getInstance();
-            case "com.dgol.applicationConfig.converters.primitives.DoubleConverter":
-                return DoubleConverter.getInstance();
-            case "com.dgol.applicationConfig.converters.primitives.ShortConverter":
-                return ShortConverter.getInstance();
-            case "com.dgol.applicationConfig.converters.primitives.FloatConverter":
-                return FloatConverter.getInstance();
-            default:
-                return createConverter(c);
-        }
+    private static final Map<String, Converter<?>> singeltonsConvertes = Collections.unmodifiableMap(
+            new HashMap<String, Converter<?>>() {{
+                put(StringConverter.class.getCanonicalName(), StringConverter.getInstance());
+                put(IntegerConverter.class.getCanonicalName(), IntegerConverter.getInstance());
+                put(BooleanConverter.class.getCanonicalName(), BooleanConverter.getInstance());
+                put(LongConverter.class.getCanonicalName(), LongConverter.getInstance());
+                put(DoubleConverter.class.getCanonicalName(), DoubleConverter.getInstance());
+                put(ShortConverter.class.getCanonicalName(), ShortConverter.getInstance());
+                put(FloatConverter.class.getCanonicalName(), FloatConverter.getInstance());
+    }});
+
+    public static Converter<?> getConverter(Class<? extends Converter<?>> c) {
+        String canonicalName = c.getCanonicalName();
+        Converter<?> converter = singeltonsConvertes.get(canonicalName);
+        return converter != null
+                ? converter
+                : createConverter(c);
     }
 
-    private static Converter<?> createConverter(Class<? extends Converter<?>> c)
-    {
+    private static Converter<?> createConverter(Class<? extends Converter<?>> c) {
         try {
             return c.getConstructor().newInstance();
         } catch (Exception e) {

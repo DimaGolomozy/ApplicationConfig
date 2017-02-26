@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by dima.golomozy on 04/05/2016.
  */
-public class KVCacheApplicationConfig extends AbstractApplicationConfig
+public class KVCacheApplicationConfig extends ApplicationConfig
 {
     private final Logger logger = LoggerFactory.getLogger(KVCacheApplicationConfig.class);
     private final KVCache kvCache;

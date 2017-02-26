@@ -1,20 +1,19 @@
-package com.dgol.applicationConfig.converters.primitives;
+package com.dgol.applicationConfig.converters;
 
-import com.dgol.applicationConfig.converters.Converter;
 import com.dgol.applicationConfig.exceptions.ConvertException;
 
 /**
- * Created by dima.golomozy on 01/08/2016.
+ *
+ * @author dima.golomozy
  */
 public final class BooleanConverter implements Converter<Boolean>
 {
     private static BooleanConverter instance;
+    private BooleanConverter() { }
 
-    public static BooleanConverter getInstance()
-    {
-        if (instance == null)
-        {
-            synchronized (BooleanConverter.class){
+    public static BooleanConverter getInstance() {
+        if (instance == null) {
+            synchronized (BooleanConverter.class) {
                 if (instance == null)
                     instance = new BooleanConverter();
             }
@@ -23,8 +22,7 @@ public final class BooleanConverter implements Converter<Boolean>
     }
 
     @Override
-    public Boolean convert(String str) throws ConvertException
-    {
+    public Boolean convert(String str) throws ConvertException {
         if ("true".equalsIgnoreCase(str) || "false".equalsIgnoreCase(str))
             return Boolean.parseBoolean(str);
         throw new ConvertException("For input string: \"" + str + "\"");

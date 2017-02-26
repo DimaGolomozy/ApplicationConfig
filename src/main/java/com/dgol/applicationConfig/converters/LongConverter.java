@@ -1,6 +1,5 @@
-package com.dgol.applicationConfig.converters.primitives;
+package com.dgol.applicationConfig.converters;
 
-import com.dgol.applicationConfig.converters.Converter;
 import com.dgol.applicationConfig.exceptions.ConvertException;
 
 /**
@@ -9,6 +8,7 @@ import com.dgol.applicationConfig.exceptions.ConvertException;
 public final class LongConverter implements Converter<Long>
 {
     private static LongConverter instance;
+    private LongConverter() { }
 
     public static LongConverter getInstance()
     {

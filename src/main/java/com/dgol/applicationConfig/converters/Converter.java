@@ -3,7 +3,8 @@ package com.dgol.applicationConfig.converters;
 import com.dgol.applicationConfig.exceptions.ConvertException;
 
 /**
- * Created by dima.golomozy on 03/05/2016.
+ * Interface for Converters
+ * @author dima.golomozy
  */
 public interface Converter<R>
 {

@@ -3,7 +3,10 @@ package com.dgol.applicationConfig;
 import java.util.Map;
 
 /**
- * Created by dima.golomozy on 30/07/2016.
+ * Implementers can register a listener to receive
+ * a new map when changes occur or the failures when they happen
+ *
+ * @author dima.golomozy
  */
 public interface ApplicationConfigListener
 {

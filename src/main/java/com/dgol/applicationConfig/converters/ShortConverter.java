@@ -1,6 +1,5 @@
-package com.dgol.applicationConfig.converters.primitives;
+package com.dgol.applicationConfig.converters;
 
-import com.dgol.applicationConfig.converters.Converter;
 import com.dgol.applicationConfig.exceptions.ConvertException;
 
 /**
@@ -9,6 +8,7 @@ import com.dgol.applicationConfig.exceptions.ConvertException;
 public final class ShortConverter implements Converter<Short>
 {
     private static ShortConverter instance;
+    private ShortConverter() { }
 
     public static ShortConverter getInstance()
     {

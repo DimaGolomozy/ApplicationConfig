@@ -1,5 +1,6 @@
 package com.dgol.applicationConfig;
 
+import com.dgol.applicationConfig.exceptions.ApplicationConfigException;
 import com.dgol.applicationConfig.exceptions.ConfigInitializeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,35 +12,35 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Created by dima.golomozy on 10/05/2016.
+ * @author dima.golomozy
  */
-public class FileApplicationConfig extends AbstractApplicationConfig
+public class FileApplicationConfig extends ApplicationConfig
 {
     private final Logger logger = LoggerFactory.getLogger(FileApplicationConfig.class);
     private final String filePath;
     private final Properties properties;
 
-    public FileApplicationConfig(Class... propertiesClasses)
-    {
+    public FileApplicationConfig(Class... propertiesClasses) {
         this(System.getProperty("propertiesFilePath"), propertiesClasses);
     }
 
-    public FileApplicationConfig(String filePath, Class... propertiesClasses)
-    {
+    public FileApplicationConfig(String filePath, Class... propertiesClasses) {
         super(propertiesClasses);
         this.properties = new Properties();
         this.filePath = filePath;
     }
 
     @Override
-    protected String getStringValueFromMapByProperty(String property)
-    {
-        return this.properties.getProperty(property);
+    protected String getStringValueFromMapByProperty(String property) {
+        String value = this.properties.getProperty(property);
+        if ("EMPTY_STRING".equalsIgnoreCase(value))
+            return "";
+
+        return value;
     }
 
     @Override
-    protected List<String> getFolderKeysFromMapByProperty(String property)
-    {
+    protected List<String> getFolderKeysFromMapByProperty(String property) {
         List<String> folderValues = new LinkedList<>();
         for (Object o : this.properties.keySet())
             if (((String)o).startsWith(property))
@@ -48,10 +49,8 @@ public class FileApplicationConfig extends AbstractApplicationConfig
     }
 
     @Override
-    public boolean initialize() throws ConfigInitializeException
-    {
-        if (isInitialized)
-        {
+    public boolean initialize() throws ApplicationConfigException {
+        if (isInitialized) {
             logger.warn("FileApplicationConfig is already initialized");
             return true;
         }
@@ -74,16 +73,17 @@ public class FileApplicationConfig extends AbstractApplicationConfig
     }
 
     @Override
-    public boolean addListener(ApplicationConfigListener applicationConfigListener)
-    {
+    public void stop() throws ApplicationConfigException { }
+
+    @Override
+    public boolean addListener(ApplicationConfigListener applicationConfigListener) {
         logger.warn("Listeners are not implemented in FileApplicationConfig");
-        return true;
+        return false;
     }
 
     @Override
-    public boolean removeListener(ApplicationConfigListener applicationConfigListener)
-    {
+    public boolean removeListener(ApplicationConfigListener applicationConfigListener) {
         logger.warn("Listeners are not implemented in FileApplicationConfig");
-        return true;
+        return false;
     }
 }

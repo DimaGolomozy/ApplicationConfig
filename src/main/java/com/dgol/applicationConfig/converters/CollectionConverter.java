@@ -1,6 +1,5 @@
-package com.dgol.applicationConfig.converters.primitives;
+package com.dgol.applicationConfig.converters;
 
-import com.dgol.applicationConfig.converters.Converter;
 import com.dgol.applicationConfig.exceptions.ConvertException;
 
 import java.util.Collection;
@@ -10,37 +9,30 @@ import java.util.Collection;
  */
 public final class CollectionConverter implements Converter<Collection>
 {
-
     private Class<? extends Collection> aClass;
     private Converter<?> converter;
     private String delimiter;
 
-    public CollectionConverter()
-    {
-    }
+    CollectionConverter() { }
 
-    public CollectionConverter withDelimiter(String delimiter)
-    {
+    public CollectionConverter withDelimiter(String delimiter) {
         this.delimiter = delimiter;
         return this;
     }
 
-    public CollectionConverter withConveter(Converter<?> converter)
-    {
+    public CollectionConverter withConverter(Converter<?> converter) {
         this.converter = converter;
         return this;
     }
 
-    public CollectionConverter withCollectionClass(Class<? extends Collection> aClass)
-    {
+    public CollectionConverter withCollectionClass(Class<? extends Collection> aClass) {
         this.aClass = aClass;
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection convert(String str) throws ConvertException
-    {
+    public Collection convert(String str) throws ConvertException {
         Collection collection;
         try {
             collection = aClass.getConstructor().newInstance();

@@ -1,6 +1,5 @@
-package com.dgol.applicationConfig.converters.primitives;
+package com.dgol.applicationConfig.converters;
 
-import com.dgol.applicationConfig.converters.Converter;
 import com.dgol.applicationConfig.exceptions.ConvertException;
 
 /**
@@ -9,11 +8,10 @@ import com.dgol.applicationConfig.exceptions.ConvertException;
 public final class FloatConverter implements Converter<Float>
 {
     private static FloatConverter instance;
+    private FloatConverter() { }
 
-    public static FloatConverter getInstance()
-    {
-        if (instance == null)
-        {
+    public static FloatConverter getInstance() {
+        if (instance == null) {
             synchronized (FloatConverter.class){
                 if (instance == null)
                     instance = new FloatConverter();
@@ -23,8 +21,7 @@ public final class FloatConverter implements Converter<Float>
     }
 
     @Override
-    public Float convert(String str) throws ConvertException
-    {
+    public Float convert(String str) throws ConvertException {
         try {
             return Float.parseFloat(str);
         } catch (NumberFormatException e) {
