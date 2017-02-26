@@ -1,9 +1,11 @@
 package com.dgol.applicationConfig;
 
-import com.dgol.applicationConfig.converters.primitives.*;
+import com.dgol.applicationConfig.annotation.MapProperty;
+import com.dgol.applicationConfig.converters.*;
 import com.dgol.applicationConfig.annotation.CollectionProperty;
 import com.dgol.applicationConfig.annotation.Property;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -37,6 +39,9 @@ public class TestConfigConstants
 
     @CollectionProperty(delimiter = ",", converter = IntegerConverter.class, collection = HashSet.class)
     public final static String set = "set";
+
+    @MapProperty(delimiter = ";", keyValueDelimiter = ",", keyConverter = StringConverter.class, valueConverter = IntegerConverter.class, map = HashMap.class)
+    public final static String map = "map";
 
     @Property(converter = IntegerConverter.class)
     public final static String folder = "folder/";

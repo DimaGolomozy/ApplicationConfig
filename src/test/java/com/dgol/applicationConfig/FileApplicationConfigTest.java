@@ -1,10 +1,11 @@
 package com.dgol.applicationConfig;
 
-import com.dgol.applicationConfig.exceptions.ConfigInitializeException;
+import com.dgol.applicationConfig.exceptions.ApplicationConfigException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -20,7 +21,7 @@ public class FileApplicationConfigTest
         try {
             this.fileApplicationConfig = new FileApplicationConfig("FileApplictionProperties.properties", TestConfigConstants.class);
             this.fileApplicationConfig.initialize();
-        } catch (ConfigInitializeException e) {
+        } catch (ApplicationConfigException e) {
             e.printStackTrace();
             System.exit(0);
         }
@@ -38,6 +39,7 @@ public class FileApplicationConfigTest
         String string1 = fileApplicationConfig.get(TestConfigConstants.string1);
         String emptyString = fileApplicationConfig.get(TestConfigConstants.emptyString);
         Set set1 = fileApplicationConfig.get(TestConfigConstants.set);
+        Map<String, Integer> map = fileApplicationConfig.get(TestConfigConstants.map);
 
         int int1 = fileApplicationConfig.get(TestConfigConstants.folder + "int1");
         int int2 = fileApplicationConfig.get(TestConfigConstants.folder + "int2");
@@ -48,6 +50,9 @@ public class FileApplicationConfigTest
         System.out.println(boolean1);
         System.out.println(long1);
         System.out.println(short1);
+
+        System.out.println(map);
+        Assert.assertFalse(map.isEmpty());
 
         System.out.println(set1);
         Assert.assertFalse(set1.isEmpty());

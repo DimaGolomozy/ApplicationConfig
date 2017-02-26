@@ -1,6 +1,6 @@
 package com.dgol.applicationConfig;
 
-import com.dgol.applicationConfig.exceptions.ConfigInitializeException;
+import com.dgol.applicationConfig.exceptions.ApplicationConfigException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -17,10 +17,11 @@ public class KVCacheApplicationConfigTest
     @BeforeClass
     public void before()
     {
+        new KVCacheApplicationConfig();
         try {
             this.kvCacheApplicationConfig = new KVCacheApplicationConfig(TestConfigConstants.class);
             this.kvCacheApplicationConfig.initialize();
-        } catch (ConfigInitializeException e) {
+        } catch (ApplicationConfigException e) {
             e.printStackTrace();
             System.exit(0);
         }
