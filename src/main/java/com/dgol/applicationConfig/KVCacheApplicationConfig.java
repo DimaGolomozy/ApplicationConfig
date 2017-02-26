@@ -37,8 +37,6 @@ public class KVCacheApplicationConfig extends ApplicationConfig
     public KVCacheApplicationConfig(String propertiesConsulPath, int delayTimeInterval, Class... propertiesClass) {
         super(propertiesClass);
         Consul consul = Consul.builder().build();
-//                    .withReadTimeoutMillis(10000 + delayTimeInterval * 1000)    // timeout is the delayTimeInterval + 10 sec
-//                    .build();
         this.kvCache = initKVCache(KVCache.newCache(consul.keyValueClient(), propertiesConsulPath, delayTimeInterval));
     }
 
