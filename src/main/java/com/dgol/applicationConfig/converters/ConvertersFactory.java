@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by dima.golomozy on 03/05/2016.
+ * Converters factory class.
+ * heals to create {@link Converter} instances
+ * or reuse primitive converters as StringConverter, IntegerConverter, etc...
  *
+ * @author dima.golomozy
  */
 public class ConvertersFactory
 {
-    private static final Map<String, Converter<?>> singeltonsConvertes = Collections.unmodifiableMap(
+    private static final Map<String, Converter<?>> singletonsConverters = Collections.unmodifiableMap(
             new HashMap<String, Converter<?>>() {{
                 put(StringConverter.class.getCanonicalName(), StringConverter.getInstance());
                 put(IntegerConverter.class.getCanonicalName(), IntegerConverter.getInstance());
@@ -23,10 +26,16 @@ public class ConvertersFactory
 
     public static Converter<?> getConverter(Class<? extends Converter<?>> c) {
         String canonicalName = c.getCanonicalName();
-        Converter<?> converter = singeltonsConvertes.get(canonicalName);
-        return converter != null
-                ? converter
-                : createConverter(c);
+        Converter<?> converter = singletonsConverters.get(canonicalName);
+
+        if (converter != null)
+            return converter;
+        else if (canonicalName.equalsIgnoreCase(CollectionConverter.class.getCanonicalName()))
+            return new CollectionConverter();
+        else if (canonicalName.equalsIgnoreCase(MapConverter.class.getCanonicalName()))
+            return new MapConverter();
+        else
+            return createConverter(c);
     }
 
     private static Converter<?> createConverter(Class<? extends Converter<?>> c) {
