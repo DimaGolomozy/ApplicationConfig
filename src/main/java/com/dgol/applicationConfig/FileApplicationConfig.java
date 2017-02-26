@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -66,7 +67,8 @@ public class FileApplicationConfig extends ApplicationConfig
             throw new ConfigInitializeException("Could not load properties file " + filePath + " from classpath.", e);
         }
 
-        if (!updateProperty2ObjectsMap(property2Converters.keySet()))
+        Map<String, Object> failures = updateProperty2ObjectsMap(property2Converters.keySet());
+        if (!failures.isEmpty())
             throw new ConfigInitializeException("Failed to initialize FileApplicationConfig. See log file for details");
 
         return isInitialized = true;
@@ -76,13 +78,13 @@ public class FileApplicationConfig extends ApplicationConfig
     public void stop() throws ApplicationConfigException { }
 
     @Override
-    public boolean addListener(ApplicationConfigListener applicationConfigListener) {
+    public boolean addUpdateListener(ApplicationConfigListener applicationConfigListener) {
         logger.warn("Listeners are not implemented in FileApplicationConfig");
         return false;
     }
 
     @Override
-    public boolean removeListener(ApplicationConfigListener applicationConfigListener) {
+    public boolean removeUpdateListener(ApplicationConfigListener applicationConfigListener) {
         logger.warn("Listeners are not implemented in FileApplicationConfig");
         return false;
     }

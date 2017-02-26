@@ -8,6 +8,7 @@ import com.dgol.applicationConfig.converters.ConvertersFactory;
 import com.dgol.applicationConfig.converters.CollectionConverter;
 import com.dgol.applicationConfig.converters.MapConverter;
 import com.dgol.applicationConfig.exceptions.ApplicationConfigException;
+import com.dgol.applicationConfig.exceptions.ConvertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +24,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public abstract class ApplicationConfig
 {
     private final Logger logger = LoggerFactory.getLogger(ApplicationConfig.class);
-    protected final CopyOnWriteArrayList<ApplicationConfigListener> applicationConfigListeners = new CopyOnWriteArrayList<>();
+    protected final CopyOnWriteArrayList<ApplicationConfigListener> updateListeners;
+    protected final CopyOnWriteArrayList<ApplicationConfigListener> failureListeners;
     protected final Map<String, Object> property2Object;
     protected final Map<String, Converter> property2Converters;
     protected final Set<String> properties2Update;
@@ -36,6 +38,8 @@ public abstract class ApplicationConfig
         this.property2Object = new ConcurrentHashMap<>();
         this.property2Converters = new HashMap<>();
         this.properties2Update = new HashSet<>();
+        this.updateListeners = new CopyOnWriteArrayList<>();
+        this.failureListeners = new CopyOnWriteArrayList<>();
 
         initPropertiesByClass(propertiesClasses);
     }
@@ -93,47 +97,59 @@ public abstract class ApplicationConfig
         return property.charAt(property.length() - 1) == '/';
     }
 
-    protected final boolean updateProperty2ObjectsMap(Set<String> propertiesToUpdate) {
-        boolean isSuccess = true;
-        for (String property : propertiesToUpdate)
-        {
-            if (property2Converters.containsKey(property))
-            {
-                if (isFolder(property))
-                    for (String key : getFolderKeysFromMapByProperty(property))
-                        isSuccess &= tryAddProperty2Object(key, property2Converters.get(property));
-                else
-                    isSuccess &= tryAddProperty2Object(property, property2Converters.get(property));
-            }
-            else
-            {
-                isSuccess = false;
+    protected final Map<String, Object> updateProperty2ObjectsMap(Set<String> propertiesToUpdate) {
+        Map<String, Object> failures = new HashMap<>();
+
+        String value;
+        for (String property : propertiesToUpdate) {
+            if (property2Converters.containsKey(property)) {
+                if (isFolder(property)) {
+                    for (String key : getFolderKeysFromMapByProperty(property)) {
+                        value = getStringValueFromMapByProperty(key);
+                        if (!tryAddProperty2Object(key, value, property2Converters.get(property)))
+                            failures.put(key, value);
+                    }
+                } else {
+                    value = getStringValueFromMapByProperty(property);
+                    if (!tryAddProperty2Object(property, value, property2Converters.get(property)))
+                        failures.put(property, value);
+                }
+            } else {
+                failures.put(property, null);
                 logger.error("Property [{}] was not found", property);
             }
         }
-        return isSuccess;
+
+        return failures;
     }
 
-    private boolean tryAddProperty2Object(String property, Converter converter)
-    {
+    private boolean tryAddProperty2Object(String property, String value, Converter converter) {
         try {
-            property2Object.put(property, converter.convert(getStringValueFromMapByProperty(property)));
+            property2Object.put(property, converter.convert(value));
             return true;
-        } catch (RuntimeException re) {
-            logger.error("Failed to convert value for property [{}]", property, re);
+        } catch (ConvertException ce) {
+            logger.error("Failed to convert value [{}] for property [{}]", value, property, ce);
             return false;
         }
     }
 
-    public boolean addListener(ApplicationConfigListener applicationConfigListener) {
-        boolean added = applicationConfigListeners.add(applicationConfigListener);
+    public boolean addUpdateListener(ApplicationConfigListener applicationConfigListener) {
+        boolean added = updateListeners.add(applicationConfigListener);
         if (isInitialized)
             applicationConfigListener.notify(property2Object);
         return added;
     }
 
-    public boolean removeListener(ApplicationConfigListener applicationConfigListener) {
-        return applicationConfigListeners.remove(applicationConfigListener);
+    public boolean removeUpdateListener(ApplicationConfigListener applicationConfigListener) {
+        return updateListeners.remove(applicationConfigListener);
+    }
+
+    public boolean addFailureListener(ApplicationConfigListener applicationConfigListener) {
+        return failureListeners.add(applicationConfigListener);
+    }
+
+    public boolean removeFailureListener(ApplicationConfigListener applicationConfigListener) {
+        return failureListeners.remove(applicationConfigListener);
     }
 
     public abstract boolean initialize() throws ApplicationConfigException;
