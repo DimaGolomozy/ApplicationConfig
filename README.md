@@ -1,4 +1,4 @@
-#Application Config
+# Application Config
 by _Dima Golomozy_
 
 Util for loading properties from Consul client 
@@ -9,18 +9,17 @@ and change them in **Runtime**.
 After loading the properties, there is no need to parse the String value.
 The ApplicationConfig is doing it when it loads the values.
 
-###Uses
+### Uses
 Use one of the Annotation Properties:
 1. CollectionProperty
 2. MapProperty
-3. Property  
+3. Property
+    
+        @Property(converter = BooleanConverter.class)
+        public final static String boolean1 = "booleanKey";
 
-
-    @Property(converter = BooleanConverter.class)
-    public final static String boolean1 = "booleanKey";
-
-    @CollectionProperty(delimiter = ",", converter = IntegerConverter.class, collection = HashSet.class)
-    public final static String set = "setKey";
+        @CollectionProperty(delimiter = ",", converter = IntegerConverter.class, collection = HashSet.class)
+        public final static String set = "setKey";  
     
 After that the value of the key "booleanKey" will be converted to Boolean.class.  
 And then one can get the value by one of the methods:
@@ -44,7 +43,7 @@ and send it to the ApplicationConfig constructor method like so:
     new FileApplicationConfig(resourceFileName, TestConfigConstants.class);
     
     
-###Value updates
+### Value updates
 If KVCacheApplicationConfig is been used, turn the flag: `putToUpdate=true` so the property  
 will be updated each time a change is been made in the consul key/value store (only under the root path, in this case is "dg/applicationConfigTest")  
 If all the keys `putToUpdate` flage will be false, the KVCache client will be closed and no properties will be updated in runtime 
