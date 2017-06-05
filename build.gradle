@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.7
-project.version = '1.4.0'
+project.version = '2.1.0'
 
 repositories {
     mavenCentral()
@@ -10,13 +10,18 @@ repositories {
 
 dependencies {
     testCompile 'org.testng:testng:6.8.8'
-    compile 'com.orbitz.consul:consul-client:0.12.3'
+    testCompile 'org.mockito:mockito-all:1.9.5'
+    compile group: 'com.orbitz.consul', name: 'consul-client', version: '0.12.8'
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
 }
 
 //create a single Jar with all dependencies
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Implementation-Title': 'applicationConfig',
+        attributes 'Implementation-Title': 'ApplicationConfig',
                 'Implementation-Version': project.version
     }
     baseName = project.name + "-all"
