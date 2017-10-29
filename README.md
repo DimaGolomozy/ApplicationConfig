@@ -1,4 +1,4 @@
-# Application Config
+# Application Config [![GitHub release](https://img.shields.io/github/release/DimaGolomozy/ApplicationConfig.svg)]()
 by _Dima Golomozy_
 
 Util for loading properties from Consul client 
